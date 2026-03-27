@@ -1,7 +1,6 @@
-"""
-Main application orchestrator
-Coordinates all components: Email Reader, Date Extractor, Event Manager, and Notification System
-"""
+# Main application orchestrator
+# Coordinates all components: Email Reader, Date Extractor, Event Manager, and Notification System
+
 
 import logging
 import schedule
@@ -17,15 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class EmailCalendarNotifier:
-    """Main application class - orchestrates all components"""
+   
     
     def __init__(self, device_tokens: List[str] = None):
-        """
-        Initialize the email calendar notification system
         
-        Args:
-            device_tokens: List of Firebase device tokens for notifications
-        """
+        # Initialize the email calendar notification system
+        
         setup_logging()
         Config.validate()
         
@@ -48,12 +44,10 @@ class EmailCalendarNotifier:
         logger.info("EmailCalendarNotifier initialized successfully")
     
     def process_emails(self) -> int:
-        """
-        Main workflow: fetch emails -> extract dates -> store events
         
-        Returns:
-            Number of new events added
-        """
+        # Main workflow: fetch emails -> extract dates -> store events
+        # Returns: Number of new events added
+
         try:
             logger.info("Starting email processing...")
             
@@ -88,12 +82,9 @@ class EmailCalendarNotifier:
             return 0
     
     def check_and_notify(self) -> int:
-        """
-        Check for upcoming events and send notifications
-        
-        Returns:
-            Number of notifications sent
-        """
+    
+        # Check for upcoming events and send notifications
+
         try:
             logger.info("Checking for upcoming events...")
             
@@ -135,10 +126,10 @@ class EmailCalendarNotifier:
             return 0
     
     def run_scheduled(self):
-        """
-        Run the application with scheduled tasks
-        Emails are fetched periodically, and notifications are checked continuously
-        """
+        
+        # Run the application with scheduled tasks
+        # Emails are fetched periodically, and notifications are checked continuously
+        
         logger.info("Starting scheduled email calendar notification system...")
         
         # Schedule email processing
@@ -170,7 +161,7 @@ class EmailCalendarNotifier:
         logger.info("Single run completed")
     
     def display_upcoming_events(self):
-        """Display all upcoming events in the next 24 hours"""
+        # Display all upcoming events in the next 24 hours
         events = self.event_manager.get_upcoming_events(hours_ahead=24)
         
         if not events:
@@ -190,7 +181,7 @@ class EmailCalendarNotifier:
             print()
     
     def display_all_events(self):
-        """Display all stored events"""
+        # Display all stored events
         events = self.event_manager.get_all_events()
         
         if not events:
@@ -210,8 +201,7 @@ class EmailCalendarNotifier:
 
 
 def main():
-    """Main entry point"""
-    # Example device tokens (replace with real Firebase device tokens)
+    
     device_tokens = [
         # "your_device_token_1",
         # "your_device_token_2",
@@ -225,7 +215,7 @@ def main():
     app.display_upcoming_events()
     
     # Uncomment to run with scheduled tasks
-    # app.run_scheduled()
+    app.run_scheduled()
 
 
 if __name__ == "__main__":

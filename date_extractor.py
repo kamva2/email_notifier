@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class DateExtractor:
-    """Extracts dates and events from email text using NLP"""
+    # Extracts dates and events from email text using NLP
     
     def __init__(self):
-        """Initialize the date extractor with spaCy NLP model"""
+        
         try:
             self.nlp = spacy.load("en_core_web_sm")
             logger.info("Loaded spaCy NLP model")
@@ -26,15 +26,9 @@ class DateExtractor:
             self.nlp = None
     
     def extract_dates_from_text(self, text: str) -> List[Dict[str, Any]]:
-        """
-        Extract dates and events from email text
         
-        Args:
-            text: Email text to extract dates from
-            
-        Returns:
-            List of dictionaries containing extracted dates and event descriptions
-        """
+        # Extract dates and events from email text
+        
         if not text:
             return []
         
@@ -54,7 +48,7 @@ class DateExtractor:
         return unique_events
     
     def _extract_by_patterns(self, text: str) -> List[Dict[str, Any]]:
-        """Extract dates using regex patterns"""
+        # Extract dates using regex patterns
         events = []
         
         # Pattern: "on [date] at [time]"
@@ -103,7 +97,7 @@ class DateExtractor:
         return events
     
     def _extract_by_nlp(self, text: str) -> List[Dict[str, Any]]:
-        """Extract dates using NLP entity recognition"""
+        # Extract dates using NLP entity recognition
         events = []
         
         try:
@@ -126,7 +120,7 @@ class DateExtractor:
         return events
     
     def _deduplicate_events(self, events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Remove duplicate events (same date within 1 hour)"""
+        # Remove duplicate events (same date within 1 hour)
         if not events:
             return []
         
@@ -146,15 +140,9 @@ class DateExtractor:
         return unique_events
     
     def extract_from_email(self, email: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Extract dates from an email dictionary
         
-        Args:
-            email: Email dictionary from EmailReader
-            
-        Returns:
-            List of extracted events with email context
-        """
+        #Extract dates from an email dictionary 
+
         # Combine subject and body
         full_text = f"{email.get('subject', '')} {email.get('full_body', '')}"
         
@@ -169,16 +157,9 @@ class DateExtractor:
         return events
     
     def is_upcoming_event(self, event_date: datetime, hours_ahead: int = 24) -> bool:
-        """
-        Check if event is upcoming (within specified hours)
         
-        Args:
-            event_date: Date of the event
-            hours_ahead: Number of hours to look ahead
-            
-        Returns:
-            True if event is upcoming, False otherwise
-        """
+        # Check if event is upcoming (within specified hours)
+        
         now = datetime.now(event_date.tzinfo) if event_date.tzinfo else datetime.now()
         time_until = (event_date - now).total_seconds() / 3600
         
