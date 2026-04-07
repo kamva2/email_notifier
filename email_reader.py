@@ -1,7 +1,7 @@
-"""
-Email Reader Component
-Connects to Outlook/Microsoft 365 and fetches email messages
-"""
+
+#Email Reader Component
+#Connects to Outlook/Microsoft 365 and fetches email messages
+
 
 import logging
 from typing import List, Dict, Any
@@ -9,11 +9,12 @@ from azure.identity import ClientSecretCredential
 import requests
 import os
 
+# Set up logging
 logger = logging.getLogger(__name__)
 
 
 class EmailReader:
-    """Reads emails from Outlook/Microsoft 365"""
+    #Reads emails from Outlook/Microsoft 365
     
     def __init__(self, tenant_id: str, client_id: str, client_secret: str):
         """
@@ -31,7 +32,7 @@ class EmailReader:
         self.authenticate()
     
     def authenticate(self) -> None:
-        """Authenticate with Microsoft Graph API"""
+        # Authenticate with Microsoft Graph API using client credentials flow
         try:
             credential = ClientSecretCredential(
                 tenant_id=self.tenant_id,
@@ -88,7 +89,7 @@ class EmailReader:
             return []
     
     def mark_email_as_read(self, email_id: str) -> bool:
-        """Mark an email as read"""
+        # Mark an email as read by email ID
         try:
             headers = {"Authorization": f"Bearer {self.token}"}
             url = f"https://graph.microsoft.com/v1.0/me/messages/{email_id}"
@@ -102,7 +103,7 @@ class EmailReader:
             return False
     
     def get_email_by_subject(self, subject: str) -> List[Dict[str, Any]]:
-        """Search emails by subject"""
+        # Search emails by subject
         try:
             headers = {"Authorization": f"Bearer {self.token}"}
             query = f"subject:{subject}"

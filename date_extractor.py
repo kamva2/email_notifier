@@ -1,7 +1,7 @@
-"""
-Date Extractor Component
-Uses NLP/AI to extract dates and events from email text
-"""
+
+# Date Extractor Component
+# Uses NLP/AI to extract dates and events from email text
+
 
 import logging
 import re

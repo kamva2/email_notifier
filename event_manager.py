@@ -1,7 +1,7 @@
-"""
-Event Manager Component
-Stores and manages detected events in SQLite database
-"""
+
+# Event Manager Component
+# Stores and manages detected events in SQLite database
+
 
 import logging
 from typing import List, Dict, Any, Optional
@@ -15,7 +15,8 @@ Base = declarative_base()
 
 
 class Event(Base):
-    """SQLAlchemy model for calendar events"""
+    # SQLAlchemy model for calendar events
+
     __tablename__ = "events"
     
     id = Column(Integer, primary_key=True)
@@ -30,7 +31,7 @@ class Event(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def to_dict(self) -> Dict[str, Any]:
-        """Convert event to dictionary"""
+        # Convert event to dictionary
         return {
             "id": self.id,
             "event_date": self.event_date.isoformat(),
@@ -46,8 +47,7 @@ class Event(Base):
 
 
 class EventManager:
-    """Manages event storage and retrieval"""
-    
+
     def __init__(self, database_url: str = "sqlite:///./email_calendar.db"):
         """
         Initialize event manager with database
