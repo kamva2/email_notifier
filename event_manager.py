@@ -7,8 +7,7 @@ import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from sqlalchemy import create_engine, Column, String, DateTime, Float, Integer, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 logger = logging.getLogger(__name__)
 Base = declarative_base()
