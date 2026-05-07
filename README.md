@@ -87,163 +87,6 @@ pip install requests
 python -m spacy download en_core_web_sm
 ```
 
-## 🔧 Configuration
-
-### 1. Set Up Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-# Microsoft 365 / Outlook Configuration
-TENANT_ID=your_tenant_id
-CLIENT_ID=your_client_id
-CLIENT_SECRET=your_client_secret
-EMAIL_USER=your_email@outlook.com
-
-# Firebase Configuration
-FIREBASE_CREDENTIALS_PATH=./config/firebase-credentials.json
-
-# Database Configuration
-DATABASE_URL=sqlite:///./email_calendar.db
-
-# Application Settings
-CHECK_INTERVAL_MINUTES=5
-NOTIFICATION_ADVANCE_HOURS=24
-LOG_LEVEL=INFO
-LOG_FILE=./logs/app.log
-```
-
-### 2. Microsoft 365 Setup
-
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Register a new application
-3. Create a client secret
-4. Add API permissions:
-   - `Mail.Read` (Read user mail)
-   - `offline_access`
-5. Copy `TENANT_ID`, `CLIENT_ID`, and `CLIENT_SECRET` to `.env`
-
-### 3. Firebase Setup
-
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Create a new project
-3. Download service account key (JSON file)
-4. Save to `config/firebase-credentials.json`
-5. Update `FIREBASE_CREDENTIALS_PATH` in `.env`
-
-## 📖 Usage Examples
-
-### Basic Setup
-
-```python
-from main import EmailCalendarNotifier
-
-# Initialize the notifier with device tokens
-device_tokens = [
-    "token_1_from_firebase",
-    "token_2_from_firebase"
-]
-
-notifier = EmailCalendarNotifier(device_tokens=device_tokens)
-```
-
-### Process Emails and Extract Events
-
-```python
-# Process all unread emails and extract calendar events
-new_events = notifier.process_emails()
-print(f"Found {new_events} new events")
-```
-
-### Schedule Automated Checking
-
-```python
-# Run automatic email checking every 5 minutes
-notifier.schedule_checks()
-```
-
-### Get Upcoming Events
-
-```python
-# Get events happening in the next 24 hours
-upcoming_events = notifier.event_manager.get_upcoming_events(hours=24)
-for event in upcoming_events:
-    print(f"Event: {event['description']}")
-    print(f"Date: {event['event_date']}")
-    print(f"Confidence: {event['confidence']}")
-```
-
-### Send Notifications
-
-```python
-# Send notification about an upcoming event
-notifier.notification_system.send_notification(
-    device_token="your_device_token",
-    title="Upcoming Meeting",
-    body="Team standup in 1 hour",
-    data={
-        "event_id": "123",
-        "event_date": "2026-03-28T10:00:00"
-    }
-)
-```
-
-### Full Workflow Example
-
-```python
-from main import EmailCalendarNotifier
-
-# Initialize
-device_tokens = ["fcm_device_token_123"]
-notifier = EmailCalendarNotifier(device_tokens=device_tokens)
-
-# Step 1: Process emails
-print("Processing emails...")
-new_events = notifier.process_emails()
-print(f"Created {new_events} new events")
-
-# Step 2: Get upcoming events
-print("\nUpcoming events:")
-upcoming = notifier.event_manager.get_upcoming_events(hours=24)
-for event in upcoming:
-    if not event['is_notified']:
-        # Step 3: Send notification
-        title = f"Reminder: {event['description'][:50]}"
-        body = f"Event on {event['event_date'][:10]}"
-        
-        notifier.notification_system.send_notification(
-            device_token=device_tokens[0],
-            title=title,
-            body=body,
-            data={
-                "event_id": str(event['id']),
-                "description": event['description']
-            }
-        )
-        
-        # Step 4: Mark as notified
-        notifier.event_manager.mark_as_notified(event['id'])
-```
-
-## 🗄️ Database Schema
-
-### Events Table
-
-```sql
-CREATE TABLE events (
-    id INTEGER PRIMARY KEY,
-    event_date DATETIME NOT NULL,
-    description VARCHAR NOT NULL,
-    sender VARCHAR,
-    email_subject VARCHAR,
-    email_id VARCHAR UNIQUE,
-    confidence FLOAT DEFAULT 0.5,
-    is_notified BOOLEAN DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-```
-
 ## 📊 Components
 
 ### EmailReader
@@ -302,58 +145,6 @@ Logs are stored in `logs/app.log` and console output.
 python -m spacy download en_core_web_sm
 ```
 
-### Firebase Credentials Not Found
-- Verify `FIREBASE_CREDENTIALS_PATH` in `.env`
-- Ensure JSON file exists at specified path
-- Check file permissions
-
-### Microsoft 365 Authentication Failed
-- Verify `TENANT_ID`, `CLIENT_ID`, `CLIENT_SECRET` are correct
-- Ensure application has correct API permissions
-- Check if client secret has expired
-
-### No Events Extracted
-- Verify email content contains date information
-- Check date format compatibility
-- Review logs for extraction errors
-
-## 📦 Virtual Environments Best Practices
-
-### Creating a Virtual Environment
-
-```bash
-# Create
-python -m venv venv
-
-# Activate (Windows PowerShell)
-.\venv\Scripts\Activate.ps1
-
-# Activate (macOS/Linux)
-source venv/bin/activate
-
-# Deactivate (any OS)
-deactivate
-```
-
-### Generating requirements.txt
-
-```bash
-# Generate from current environment
-pip freeze > requirements.txt
-
-# Install from requirements.txt
-pip install -r requirements.txt
-```
-
-### Checking Active Environment
-
-```bash
-# On Windows
-where python
-
-# On macOS/Linux
-which python
-```
 
 ## 🚀 Running the Application
 
@@ -368,31 +159,6 @@ from main import EmailCalendarNotifier
 
 notifier = EmailCalendarNotifier(device_tokens=["your_tokens"])
 notifier.schedule_checks()  # Runs indefinitely
-```
-
-### With systemd (Linux/macOS)
-
-Create `email_notifier.service`:
-```ini
-[Unit]
-Description=Email Calendar Notifier
-After=network.target
-
-[Service]
-Type=simple
-User=your_user
-WorkingDirectory=/path/to/email_notifier
-ExecStart=/path/to/email_notifier/venv/bin/python main.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start:
-```bash
-sudo systemctl enable email_notifier.service
-sudo systemctl start email_notifier.service
 ```
 
 ## 📋 Configuration Examples
@@ -411,22 +177,8 @@ NOTIFICATION_ADVANCE_HOURS=48
 LOG_LEVEL=WARNING
 ```
 
-## 📄 License
-
-[Specify your license here]
-
 ## 👤 Author
 
 Created by Kamva for University of Cape Town
 
-## 🤝 Contributing
-
-Contributions are welcome! Please ensure:
-- Code follows existing style
-- Tests pass
-- Logging is appropriate
-- Documentation is updated
-
----
-
-**Last Updated**: March 27, 2026
+**Last Updated**: May 07, 2026
