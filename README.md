@@ -179,6 +179,6 @@ LOG_LEVEL=WARNING
 
 ## 👤 Author
 
-Created by Kamva for University of Cape Town
+Created by Kamva 
 
 **Last Updated**: May 07, 2026
